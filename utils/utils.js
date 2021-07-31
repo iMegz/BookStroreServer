@@ -143,3 +143,11 @@ exports.loading = (loadingmsg = "loading") => {
 
   return { stop };
 };
+
+exports.deleteFile = (folder, filename) => {
+  const { access, unlinkSync, constants } = require("fs");
+  const { join } = require("path");
+
+  const file = join(__dirname, "../", "uploads", folder, filename);
+  access(file, constants.F_OK, () => unlinkSync(file));
+};

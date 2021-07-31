@@ -11,13 +11,13 @@ module.exports = (req, res, next) => {
     if (err instanceof jwt.TokenExpiredError) {
       error = {
         ErrorCode: "SESSION_EXPIRED",
-        ErrorData: "SESSION_EXPIRED",
+        ErrorData: [],
         StatusCode: 401,
       };
     } else {
       error = {
         ErrorCode: "INVALID_TOKEN",
-        ErrorData: "INVALID_TOKEN",
+        ErrorData: [],
         StatusCode: 401,
       };
     }
@@ -26,7 +26,7 @@ module.exports = (req, res, next) => {
   if (!decoded) {
     const error = {
       ErrorCode: "UNAUTHORIZED",
-      ErrorData: decoded,
+      ErrorData: [],
       StatusCode: 401,
     };
     next(error);

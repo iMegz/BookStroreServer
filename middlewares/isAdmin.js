@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
   else {
     const error = {
       ErrorCode: "FORBIDDEN",
-      ErrorData: "FORBIDDEN",
+      ErrorData: [],
       StatusCode: 403,
     };
     next(error);

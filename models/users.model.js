@@ -5,6 +5,11 @@ const UserSchema = Schema({
   email: String,
   password: String,
   access: Number,
+  status: {
+    active: Boolean,
+    activationLink: String,
+    expireDate: Date,
+  },
   profile: {
     firstname: String,
     lastname: String,

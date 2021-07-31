@@ -2,7 +2,7 @@ const multer = require("multer");
 const { join } = require("path");
 
 module.exports = (folder) => {
-  folder ||= "products";
+  folder ||= "books";
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -19,7 +19,7 @@ module.exports = (folder) => {
   const fileFilter = (req, file, cb) => {
     const error = {
       ErrorCode: "INVALID_FILE_TYPE",
-      ErrorData: `${file.originalname} type is invalid!`,
+      ErrorData: [`${file.originalname} type is invalid!`],
       StatusCode: 400,
     };
     switch (file.mimetype) {

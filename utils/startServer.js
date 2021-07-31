@@ -4,11 +4,7 @@ module.exports = (app) => {
   let listener;
 
   const listen = () => {
-    listener = app
-      .listen(port, () => {
-        onSuccess();
-      })
-      .on("error", onError);
+    listener = app.listen(port, onSuccess).on("error", onError);
   };
 
   const onSuccess = () => {
