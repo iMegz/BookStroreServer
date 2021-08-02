@@ -144,10 +144,14 @@ exports.loading = (loadingmsg = "loading") => {
   return { stop };
 };
 
+exports.decodeBase64 = (str) => Buffer.from(str, "base64").toString("utf-8");
+
+exports.encodeBase64 = (str) => Buffer.from(str, "utf-8").toString("base64");
+
 exports.deleteFile = (folder, filename) => {
   const { access, unlinkSync, constants } = require("fs");
   const { join } = require("path");
 
   const file = join(__dirname, "../", "uploads", folder, filename);
-  access(file, constants.F_OK, () => unlinkSync(file));
+  access(file, constants.F_OK, (err) => !err && unlinkSync(file));
 };

@@ -10,7 +10,8 @@ const headersMw = require("./middlewares/headersMw");
 const errorMw = require("./middlewares/errorMw");
 
 //Routers
-const bookRouter = require("./routes/books.route");
+const booksRouter = require("./routes/books.route");
+const usersRouter = require("./routes/users.route");
 
 //Start app
 const app = express();
@@ -19,7 +20,8 @@ app.use(express.static("uploads"));
 app.use(express.json());
 app.use(headersMw);
 
-app.use("/books", bookRouter);
+app.use("/api/books", booksRouter);
+app.use("/api/users", usersRouter);
 
 app.use(errorMw);
 

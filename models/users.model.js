@@ -6,8 +6,8 @@ const UserSchema = Schema({
   password: String,
   access: Number,
   status: {
-    active: Boolean,
-    activationLink: String,
+    active: { type: Boolean, default: false },
+    token: String,
     expireDate: Date,
   },
   profile: {
@@ -25,10 +25,12 @@ const UserSchema = Schema({
   },
   booksOwened: [{ type: Schema.Types.ObjectId, ref: "Book" }],
   cart: [{ type: Schema.Types.ObjectId, ref: "Book" }],
-  orders: {
-    delivered: Boolean,
-    books: [{ type: Schema.Types.ObjectId, ref: "Book" }],
-  },
+  orders: [
+    {
+      delivered: Boolean,
+      books: [{ type: Schema.Types.ObjectId, ref: "Book" }],
+    },
+  ],
 });
 
 module.exports = model("User", UserSchema);

@@ -6,24 +6,28 @@ exports.vAddBook = [
     .not()
     .isEmpty()
     .withMessage("Title can't be empty")
-    .isAlphanumeric()
-    .withMessage("Title must be alpha numeric")
+    .custom((title, { req }) => {
+      const regex = /[<>]/;
+      if (!regex.test(title)) return true;
+      else throw Error("Title contains invalid characters");
+    })
     .trim()
     .escape(),
   body("author")
     .not()
     .isEmpty()
     .withMessage("Author can't be empty")
-    .isAlphanumeric()
-    .withMessage("Author must be alpha numeric")
+    .custom((author, { req }) => {
+      const regex = /[<>?@!&^]/;
+      if (!regex.test(author)) return true;
+      else throw Error("Author name contains invalid characters");
+    })
     .trim()
     .escape(),
   body("desc")
     .not()
     .isEmpty()
     .withMessage("Desc can't be empty")
-    .isAlphanumeric()
-    .withMessage("Desc must be alpha numeric")
     .trim()
     .escape(),
   body("amount")
@@ -42,10 +46,10 @@ exports.vAddBook = [
     .withMessage("Price can't contian non-numeric values")
     .trim()
     .escape(),
-  body("ageRange.min")
+  body("min")
     .isNumeric()
     .withMessage("Minimum age can't contian non-numeric values"),
-  body("ageRange.max")
+  body("max")
     .isNumeric()
     .withMessage("Maimum age can't contian non-numeric values"),
   validate,

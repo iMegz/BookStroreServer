@@ -1,4 +1,6 @@
 const Router = require("express").Router();
+const upload = require("../middlewares/uploadMw");
+
 const {
   getBook,
   addBook,
@@ -8,6 +10,6 @@ const { vAddBook } = require("../validators/books.validators");
 
 Router.get("/getBook/:id", getBook);
 Router.delete("/delBook/:id", delBook);
-Router.post("/getBook/", vAddBook, addBook);
+Router.post("/addBook/", upload("books").single("cover"), vAddBook, addBook);
 
 module.exports = Router;

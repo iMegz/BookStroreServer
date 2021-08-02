@@ -2,11 +2,12 @@ const multer = require("multer");
 const { join } = require("path");
 
 module.exports = (folder) => {
-  folder ||= "books";
+  folder = folder || "books";
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       const dir = join(__dirname, "../", "uploads", folder);
+      req.uploadFolder = folder;
       cb(null, dir);
     },
     filename: (req, file, cb) => {
