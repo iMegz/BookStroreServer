@@ -15,6 +15,16 @@ exports.getBook = async (req, res, next) => {
   }
 };
 
+exports.getBooks = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const books = await Book.find({});
+    res.status(200).json(books);
+  } catch (err) {
+    next({ StatusCode: 500, ErrorCode: "DATABASE_ERROR" });
+  }
+};
+
 exports.addBook = async (req, res, next) => {
   const { title, author, desc, amount, price, min, max } = req.body;
   const ageRange = { min, max };

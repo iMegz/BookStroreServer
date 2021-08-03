@@ -5,10 +5,12 @@ const {
   encodeBase64,
 } = require("../utils/utils");
 const { now } = require("mongoose");
-const { hash } = require("bcrypt");
+const { hash, compare } = require("bcrypt");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../models/users.model");
 const exclude = ["-__v", "-password"];
+const jwt = require("jsonwebtoken");
+
 exports.signup = async (req, res, next) => {
   const { username, email, password } = req.body;
   const hashedPass = await hash(password, 12);
@@ -18,7 +20,8 @@ exports.signup = async (req, res, next) => {
       $or: [{ email }, { username }],
     }).select(exclude);
     const token = `${user._id}${await generateToken(32)}`;
-    if (userExists.length) next({ ErrorCode: "ACCOUNT_EXISTS" });
+    if (userExists.length)
+      next({ StatusCode: 400, ErrorCode: "ACCOUNT_EXISTS" });
     else {
       const encodedToken = encodeBase64(token);
       const expireDate = generateExpireDate(24);
@@ -37,6 +40,7 @@ exports.signup = async (req, res, next) => {
     next({ ErrorCode: "DATABASE_ERROR" });
   }
 };
+
 exports.activate = async (req, res, next) => {
   const token = decodeBase64(req.params.token);
   const id = token.substr(0, 24);
@@ -48,7 +52,9 @@ exports.activate = async (req, res, next) => {
         user.status.active = true;
         await user.save();
         user.status = undefined;
-        res.status(200).json(user);
+        //change this later
+        const closeTab = `<script>close();</script>`;
+        res.status(200).send(closeTab);
       } else ErrorCode = "ACTIVATION_LINK_EXPIRED";
     } else ErrorCode = "ACTIVATION_LINK_INVALID";
   } catch (err) {
@@ -56,4 +62,19 @@ exports.activate = async (req, res, next) => {
     next({ ErrorCode: "DATABASE_ERROR" });
   }
   if (ErrorCode) next({ ErrorCode, StatusCode: 400 });
+};
+
+exports.login = async (req, res, next) => {
+  const { usernameOrEmail, password } = req.body;
+  const user = await User.findOne({
+    $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
+  }).select(["-__v"]);
+  if (user) {
+    const passIsCorret = await compare(password, user.password);
+    if (passIsCorret) {
+      user.password = undefined;
+      const token = jwt.sign({ ...user }, process.env.JWT_SECRET);
+      res.json(token);
+    } else next({ ErrorCode: "PASSWORD_INCORRECT", StatusCode: 400 });
+  } else next({ ErrorCode: "ACCOUNT_DOES_NOT_EXIST", StatusCode: 400 });
 };
